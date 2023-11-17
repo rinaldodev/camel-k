@@ -215,7 +215,8 @@ func Run(healthPort, monitoringPort int32, leaderElection bool, leaderElectionID
 	}
 
 	options := cache.Options{
-		ByObject: selectors,
+		ByObject:   selectors,
+		Namespaces: []string{watchNamespace},
 	}
 
 	if !platform.IsCurrentOperatorGlobal() {
