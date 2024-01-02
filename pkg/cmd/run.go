@@ -506,7 +506,7 @@ func (o *runCmdOptions) createOrUpdateIntegration(cmd *cobra.Command, c client.C
 	name := o.GetIntegrationName(sources)
 
 	if name == "" {
-		return nil, errors.New("unable to determine integration name")
+		return nil, errors.New("unable to determine integration name, you may pass it using the --name option")
 	}
 
 	integration, existing, err := o.getIntegration(cmd, c, namespace, name)

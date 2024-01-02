@@ -20,6 +20,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strings"
@@ -810,6 +811,109 @@ func TestRunOutput(t *testing.T) {
 	output, err = test.ExecuteCommand(rootCmd, cmdRun, tmpFile1.Name())
 	assert.Nil(t, err)
 	assert.Equal(t, fmt.Sprintf("Integration \"%s\" updated\n", integrationName), output)
+}
+
+func TestRunGlob(t *testing.T) {
+	prefix := fmt.Sprintf("testglob-%d", rand.Intn(10000))
+	pattern := fmt.Sprintf("%s-camel-k-*.yaml", prefix)
+
+	tmpFile1, err := os.CreateTemp("", pattern)
+	if err != nil {
+		t.Error(err)
+	}
+	defer tmpFile1.Close()
+	assert.Nil(t, tmpFile1.Sync())
+	assert.Nil(t, os.WriteFile(tmpFile1.Name(), []byte(yamlIntegration), 0o400))
+
+	tmpFile2, err := os.CreateTemp("", pattern)
+	if err != nil {
+		t.Error(err)
+	}
+	defer tmpFile2.Close()
+	assert.Nil(t, tmpFile2.Sync())
+	assert.Nil(t, os.WriteFile(tmpFile2.Name(), []byte(yamlIntegration), 0o400))
+
+	integrationName := "myname"
+
+	_, rootCmd, _ := initializeRunCmdOptionsWithOutput(t)
+
+	dir := filepath.Dir(tmpFile1.Name())
+	file := fmt.Sprintf("%s/%s*", dir, prefix)
+
+	output, err := test.ExecuteCommand(rootCmd, cmdRun, "--name", integrationName, file)
+	assert.Nil(t, err)
+	assert.Equal(t, fmt.Sprintf("Integration \"%s\" created\n", integrationName), output)
+}
+
+func TestRunGlobChange(t *testing.T) {
+	pattern := fmt.Sprintf("testglob-%d-camel-k-*.yaml", rand.Intn(10000))
+
+	tmpFile1, err := os.CreateTemp("", pattern)
+	if err != nil {
+		t.Error(err)
+	}
+	defer tmpFile1.Close()
+	assert.Nil(t, tmpFile1.Sync())
+	assert.Nil(t, os.WriteFile(tmpFile1.Name(), []byte(yamlIntegration), 0o400))
+
+	integrationName := "myname"
+
+	_, rootCmd, _ := initializeRunCmdOptionsWithOutput(t)
+
+	dir := filepath.Dir(tmpFile1.Name())
+	file := fmt.Sprintf("%s/%s", dir, pattern)
+
+	output, err := test.ExecuteCommand(rootCmd, cmdRun, "--name", integrationName, file)
+	assert.Nil(t, err)
+	assert.Equal(t, fmt.Sprintf("Integration \"%s\" created\n", integrationName), output)
+
+	output, err = test.ExecuteCommand(rootCmd, cmdRun, "--name", integrationName, file)
+	assert.Nil(t, err)
+	assert.Equal(t, fmt.Sprintf("Integration \"%s\" unchanged\n", integrationName), output)
+
+	tmpFile2, err := os.CreateTemp("", pattern)
+	if err != nil {
+		t.Error(err)
+	}
+	defer tmpFile2.Close()
+	assert.Nil(t, tmpFile2.Sync())
+	assert.Nil(t, os.WriteFile(tmpFile2.Name(), []byte(yamlIntegration), 0o400))
+
+	output, err = test.ExecuteCommand(rootCmd, cmdRun, "--name", integrationName, file)
+	assert.Nil(t, err)
+	assert.Equal(t, fmt.Sprintf("Integration \"%s\" updated\n", integrationName), output)
+}
+
+func TestRunGlobWithoutName(t *testing.T) {
+	pattern := fmt.Sprintf("testglob-%d-camel-k-*.yaml", rand.Intn(10000))
+
+	tmpFile1, err := os.CreateTemp("", pattern)
+	if err != nil {
+		t.Error(err)
+	}
+	defer tmpFile1.Close()
+	assert.Nil(t, tmpFile1.Sync())
+	assert.Nil(t, os.WriteFile(tmpFile1.Name(), []byte(yamlIntegration), 0o400))
+
+	tmpFile2, err := os.CreateTemp("", pattern)
+	if err != nil {
+		t.Error(err)
+	}
+	defer tmpFile2.Close()
+	assert.Nil(t, tmpFile2.Sync())
+	assert.Nil(t, os.WriteFile(tmpFile2.Name(), []byte(yamlIntegration), 0o400))
+
+	_, rootCmd, _ := initializeRunCmdOptionsWithOutput(t)
+
+	dir1 := filepath.Dir(tmpFile1.Name())
+	dir2 := filepath.Dir(tmpFile1.Name())
+
+	assert.Equal(t, dir1, dir2, "both temp test files should be in the same directory")
+
+	file := fmt.Sprintf("%s/%s", dir1, pattern)
+
+	_, err = test.ExecuteCommand(rootCmd, cmdRun, file)
+	assert.Equal(t, "unable to determine integration name, you may pass it using the --name option", err.Error())
 }
 
 func TestRunOutputWithoutKubernetesCluster(t *testing.T) {
