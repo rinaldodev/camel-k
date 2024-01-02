@@ -141,7 +141,7 @@ func TestKamelCLIRun(t *testing.T) {
 	t.Run("Run with glob patterns", func(t *testing.T) {
 		t.Run("YAML", func(t *testing.T) {
 			name := RandomizedSuffixName("run")
-			Expect(KamelRunWithID(operatorID, ns, "files/run*", "--name", name).Execute()).To(Succeed())
+			Expect(KamelRunWithID(operatorID, ns, "files/glob/run*", "--name", name).Execute()).To(Succeed())
 			Eventually(IntegrationPodPhase(ns, name), TestTimeoutLong).Should(Equal(corev1.PodRunning))
 			Eventually(IntegrationConditionStatus(ns, name, v1.IntegrationConditionReady), TestTimeoutShort).
 				Should(Equal(corev1.ConditionTrue))
@@ -152,7 +152,7 @@ func TestKamelCLIRun(t *testing.T) {
 
 		t.Run("YAML", func(t *testing.T) {
 			name := RandomizedSuffixName("java")
-			Expect(KamelRunWithID(operatorID, ns, "files/java*", "--name", name).Execute()).To(Succeed())
+			Expect(KamelRunWithID(operatorID, ns, "files/glob/Java*", "--name", name).Execute()).To(Succeed())
 			Eventually(IntegrationPodPhase(ns, name), TestTimeoutLong).Should(Equal(corev1.PodRunning))
 			Eventually(IntegrationConditionStatus(ns, name, v1.IntegrationConditionReady), TestTimeoutShort).
 				Should(Equal(corev1.ConditionTrue))

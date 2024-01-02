@@ -17,7 +17,7 @@
 
 import org.apache.camel.builder.RouteBuilder;
 
-public class Java extends RouteBuilder {
+public class Java1 extends RouteBuilder {
   @Override
   public void configure() throws Exception {
 	  from("timer:tick?period=5000")
