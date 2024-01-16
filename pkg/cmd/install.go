@@ -270,6 +270,7 @@ func (o *installCmdOptions) setupEnvVars() {
 	}
 }
 
+// TODO: check this part to add platformcontroller installation
 func (o *installCmdOptions) tryInstallViaOLM(
 	cmd *cobra.Command, clientProvider client.Provider, output *kubernetes.Collection,
 ) (bool, error) {

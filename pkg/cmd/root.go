@@ -144,6 +144,7 @@ func addKamelSubcommands(cmd *cobra.Command, options *RootCmdOptions) {
 	cmd.AddCommand(newCmdDescribe(options))
 	cmd.AddCommand(cmdOnly(newCmdRebuild(options)))
 	cmd.AddCommand(cmdOnly(newCmdOperator()))
+	cmd.AddCommand(cmdOnly(newCmdPlatformController()))
 	cmd.AddCommand(cmdOnly(newCmdBuilder(options)))
 	cmd.AddCommand(cmdOnly(newCmdDebug(options)))
 	cmd.AddCommand(cmdOnly(newCmdDump(options)))
