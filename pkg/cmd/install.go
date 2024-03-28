@@ -337,10 +337,34 @@ func (o *installCmdOptions) installOperator(cmd *cobra.Command, output *kubernet
 		platformName = platformutil.DefaultPlatformName
 	}
 
+	cfg := v1.OperatorConfiguration{
+		CustomImage:           o.OperatorImage,
+		CustomImagePullPolicy: o.OperatorImagePullPolicy,
+		Namespace:             namespace,
+		Global:                o.Global,
+		ClusterType:           o.ClusterType,
+		Health: v1.OperatorHealthConfiguration{
+			Port: o.HealthPort,
+		},
+		Monitoring: v1.OperatorMonitoringConfiguration{
+			Enabled: o.Monitoring,
+			Port:    o.MonitoringPort,
+		},
+		Debugging: v1.OperatorDebuggingConfiguration{
+			Enabled: o.Debugging,
+			Port:    o.DebuggingPort,
+			Path:    o.DebuggingPath,
+		},
+		Tolerations:           o.Tolerations,
+		NodeSelectors:         o.NodeSelectors,
+		ResourcesRequirements: o.ResourcesRequirements,
+		EnvVars:               o.EnvVars,
+	}
+
 	// Set up operator
 	if !olm {
 		if !o.SkipOperatorSetup {
-			if err := o.setupOperator(cmd, c, namespace, platformName, output); err != nil {
+			if err := o.setupOperator(cmd, c, cfg, platformName, output); err != nil {
 				return err
 			}
 		} else {
@@ -360,7 +384,7 @@ func (o *installCmdOptions) installOperator(cmd *cobra.Command, output *kubernet
 	}
 
 	// Set up IntegrationPlatform
-	platform, err := o.setupIntegrationPlatform(c, namespace, platformName, registrySecretName, output)
+	platform, err := o.setupIntegrationPlatform(c, cfg, platformName, registrySecretName, output)
 	if err != nil {
 		return err
 	}
@@ -403,7 +427,7 @@ func getOperatorID(vars []string) (string, error) {
 }
 
 func (o *installCmdOptions) setupOperator(
-	cmd *cobra.Command, c client.Client, namespace string, platformName string, output *kubernetes.Collection,
+	cmd *cobra.Command, c client.Client, cfg v1.OperatorConfiguration, platformName string, output *kubernetes.Collection,
 ) error {
 	if ok, err := isInstallAllowed(o.Context, c, platformName, o.Force, cmd.OutOrStdout()); err != nil {
 		if k8serrors.IsForbidden(err) {
@@ -417,30 +441,6 @@ func (o *installCmdOptions) setupOperator(
 		return fmt.Errorf(
 			"installation not allowed because operator with id %q already exists; use the --force option to skip this check",
 			platformName)
-	}
-
-	cfg := install.OperatorConfiguration{
-		CustomImage:           o.OperatorImage,
-		CustomImagePullPolicy: o.OperatorImagePullPolicy,
-		Namespace:             namespace,
-		Global:                o.Global,
-		ClusterType:           o.ClusterType,
-		Health: install.OperatorHealthConfiguration{
-			Port: o.HealthPort,
-		},
-		Monitoring: install.OperatorMonitoringConfiguration{
-			Enabled: o.Monitoring,
-			Port:    o.MonitoringPort,
-		},
-		Debugging: install.OperatorDebuggingConfiguration{
-			Enabled: o.Debugging,
-			Port:    o.DebuggingPort,
-			Path:    o.DebuggingPath,
-		},
-		Tolerations:           o.Tolerations,
-		NodeSelectors:         o.NodeSelectors,
-		ResourcesRequirements: o.ResourcesRequirements,
-		EnvVars:               o.EnvVars,
 	}
 
 	return install.OperatorOrCollect(o.Context, cmd, c, cfg, output, o.Force)
@@ -471,7 +471,7 @@ func (o *installCmdOptions) setupRegistrySecret(c client.Client, namespace strin
 	return "", nil
 }
 
-func (o *installCmdOptions) setupIntegrationPlatform(c client.Client, namespace string, platformName string, registrySecretName string,
+func (o *installCmdOptions) setupIntegrationPlatform(c client.Client, cfg v1.OperatorConfiguration, platformName string, registrySecretName string,
 	output *kubernetes.Collection,
 ) (*v1.IntegrationPlatform, error) {
 	platform, err := install.NewPlatform(o.Context, c, o.ClusterType, o.SkipRegistrySetup, o.registry, platformName)
@@ -558,7 +558,7 @@ func (o *installCmdOptions) setupIntegrationPlatform(c client.Client, namespace 
 		if err != nil {
 			return nil, err
 		}
-		err = createDefaultMavenSettingsConfigMap(o.Context, c, namespace, platform.Name, settings)
+		err = createDefaultMavenSettingsConfigMap(o.Context, c, cfg.Namespace, platform.Name, settings)
 		if err != nil {
 			return nil, err
 		}
@@ -594,18 +594,22 @@ func (o *installCmdOptions) setupIntegrationPlatform(c client.Client, namespace 
 			}
 		}
 	}
+
+	// save install config to the IntegrationPlatform
+	platform.Spec.OperatorConfiguration = cfg
+
 	// Always create a platform in the namespace where the operator is located
-	err = install.ObjectOrCollect(o.Context, c, namespace, output, o.Force, platform)
+	err = install.ObjectOrCollect(o.Context, c, cfg.Namespace, output, o.Force, platform)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := install.IntegrationPlatformViewerRole(o.Context, c, namespace); err != nil && !k8serrors.IsAlreadyExists(err) {
+	if err := install.IntegrationPlatformViewerRole(o.Context, c, cfg.Namespace); err != nil && !k8serrors.IsAlreadyExists(err) {
 		return nil, fmt.Errorf("error while installing global IntegrationPlatform viewer role: %w", err)
 	}
 
 	if o.ExampleSetup {
-		err = install.ExampleOrCollect(o.Context, c, namespace, output, o.Force)
+		err = install.ExampleOrCollect(o.Context, c, cfg.Namespace, output, o.Force)
 		if err != nil {
 			return nil, err
 		}

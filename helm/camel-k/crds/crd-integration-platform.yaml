@@ -448,6 +448,87 @@ spec:
                       type: object
                     type: array
                 type: object
+              operatorConfiguration:
+                description: Operator deployment related configuration
+                properties:
+                  clusterType:
+                    description: Set explicitly the cluster type to Kubernetes or
+                      OpenShift
+                    type: string
+                  customImage:
+                    description: Set the operator Image used for the operator deployment
+                    type: string
+                  customImagePullPolicy:
+                    description: Image Pull Policy that will be used for the custom
+                      image
+                    type: string
+                  debugging:
+                    description: Debugging-related configurations
+                    properties:
+                      enabled:
+                        description: To enable or disable the operator debugging
+                        type: boolean
+                      path:
+                        description: The path to the kamel executable file
+                        type: string
+                      port:
+                        description: The port of the debugger
+                        format: int32
+                        type: integer
+                    type: object
+                  envVars:
+                    description: Add an environment variable to set in the operator
+                      Pod(s), as <name=value>
+                    items:
+                      type: string
+                    type: array
+                  global:
+                    description: Configure the operator to watch all namespaces
+                    type: boolean
+                  health:
+                    description: Health-related configurations
+                    properties:
+                      port:
+                        description: The port of the health endpoint
+                        format: int32
+                        type: integer
+                    type: object
+                  monitoring:
+                    description: Monitoring-related configurations
+                    properties:
+                      enabled:
+                        description: To enable or disable the operator monitoring
+                        type: boolean
+                      port:
+                        description: The port of the metrics endpoint
+                        format: int32
+                        type: integer
+                    type: object
+                  namespace:
+                    description: Namespace where the operator deployment will be created
+                    type: string
+                  nodeSelectors:
+                    description: Add a NodeSelectors to the operator Pod
+                    items:
+                      type: string
+                    type: array
+                  resourcesRequirements:
+                    description: Define the resources requests and limits assigned
+                      to the operator Pod as <requestType.requestResource=value> (i.e.,
+                      limits.memory=256Mi)
+                    items:
+                      type: string
+                    type: array
+                  tolerations:
+                    description: Add Tolerations to the operator Pod
+                    items:
+                      type: string
+                    type: array
+                required:
+                - debugging
+                - health
+                - monitoring
+                type: object
               profile:
                 description: the profile you wish to use. It will apply certain traits
                   which are required by the specific profile chosen. It usually relates
@@ -2350,6 +2431,87 @@ spec:
                   for this IntegrationPlatform.
                 format: int64
                 type: integer
+              operatorConfiguration:
+                description: Operator deployment related configuration
+                properties:
+                  clusterType:
+                    description: Set explicitly the cluster type to Kubernetes or
+                      OpenShift
+                    type: string
+                  customImage:
+                    description: Set the operator Image used for the operator deployment
+                    type: string
+                  customImagePullPolicy:
+                    description: Image Pull Policy that will be used for the custom
+                      image
+                    type: string
+                  debugging:
+                    description: Debugging-related configurations
+                    properties:
+                      enabled:
+                        description: To enable or disable the operator debugging
+                        type: boolean
+                      path:
+                        description: The path to the kamel executable file
+                        type: string
+                      port:
+                        description: The port of the debugger
+                        format: int32
+                        type: integer
+                    type: object
+                  envVars:
+                    description: Add an environment variable to set in the operator
+                      Pod(s), as <name=value>
+                    items:
+                      type: string
+                    type: array
+                  global:
+                    description: Configure the operator to watch all namespaces
+                    type: boolean
+                  health:
+                    description: Health-related configurations
+                    properties:
+                      port:
+                        description: The port of the health endpoint
+                        format: int32
+                        type: integer
+                    type: object
+                  monitoring:
+                    description: Monitoring-related configurations
+                    properties:
+                      enabled:
+                        description: To enable or disable the operator monitoring
+                        type: boolean
+                      port:
+                        description: The port of the metrics endpoint
+                        format: int32
+                        type: integer
+                    type: object
+                  namespace:
+                    description: Namespace where the operator deployment will be created
+                    type: string
+                  nodeSelectors:
+                    description: Add a NodeSelectors to the operator Pod
+                    items:
+                      type: string
+                    type: array
+                  resourcesRequirements:
+                    description: Define the resources requests and limits assigned
+                      to the operator Pod as <requestType.requestResource=value> (i.e.,
+                      limits.memory=256Mi)
+                    items:
+                      type: string
+                    type: array
+                  tolerations:
+                    description: Add Tolerations to the operator Pod
+                    items:
+                      type: string
+                    type: array
+                required:
+                - debugging
+                - health
+                - monitoring
+                type: object
               phase:
                 description: defines in what phase the IntegrationPlatform is found
                 type: string

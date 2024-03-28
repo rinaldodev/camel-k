@@ -178,6 +178,14 @@ func ForKind(kind schema.GroupVersionKind) interface{} {
 		return &camelv1.MavenBuildSpecApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("MavenSpec"):
 		return &camelv1.MavenSpecApplyConfiguration{}
+	case v1.SchemeGroupVersion.WithKind("OperatorConfiguration"):
+		return &camelv1.OperatorConfigurationApplyConfiguration{}
+	case v1.SchemeGroupVersion.WithKind("OperatorDebuggingConfiguration"):
+		return &camelv1.OperatorDebuggingConfigurationApplyConfiguration{}
+	case v1.SchemeGroupVersion.WithKind("OperatorHealthConfiguration"):
+		return &camelv1.OperatorHealthConfigurationApplyConfiguration{}
+	case v1.SchemeGroupVersion.WithKind("OperatorMonitoringConfiguration"):
+		return &camelv1.OperatorMonitoringConfigurationApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("Pipe"):
 		return &camelv1.PipeApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("PipeCondition"):

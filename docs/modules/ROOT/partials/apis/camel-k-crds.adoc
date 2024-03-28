@@ -3021,6 +3021,13 @@ list of configuration properties to be attached to all the Integration/Integrati
 
 configuration to be executed to all Kamelets controlled by this IntegrationPlatform
 
+|`operatorConfiguration` +
+*xref:#_camel_apache_org_v1_OperatorConfiguration[OperatorConfiguration]*
+|
+
+
+Operator deployment related configuration
+
 
 |===
 
@@ -4445,6 +4452,241 @@ See https://maven.apache.org/guides/mini/guide-using-extensions.html.
 The CLI options that are appended to the list of arguments for Maven commands,
 e.g., `-V,--no-transfer-progress,-Dstyle.color=never`.
 See https://maven.apache.org/ref/3.8.4/maven-embedder/cli.html.
+
+
+|===
+
+[#_camel_apache_org_v1_OperatorConfiguration]
+=== OperatorConfiguration
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_IntegrationPlatformSpec, IntegrationPlatformSpec>>
+
+
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`customImage` +
+string
+|
+
+
+Set the operator Image used for the operator deployment
+
+|`customImagePullPolicy` +
+string
+|
+
+
+Image Pull Policy that will be used for the custom image
+
+|`namespace` +
+string
+|
+
+
+Namespace where the operator deployment will be created
+
+|`global` +
+bool
+|
+
+
+Configure the operator to watch all namespaces
+
+|`clusterType` +
+string
+|
+
+
+Set explicitly the cluster type to Kubernetes or OpenShift
+
+|`health` +
+*xref:#_camel_apache_org_v1_OperatorHealthConfiguration[OperatorHealthConfiguration]*
+|
+
+
+Health-related configurations
+
+|`monitoring` +
+*xref:#_camel_apache_org_v1_OperatorMonitoringConfiguration[OperatorMonitoringConfiguration]*
+|
+
+
+Monitoring-related configurations
+
+|`debugging` +
+*xref:#_camel_apache_org_v1_OperatorDebuggingConfiguration[OperatorDebuggingConfiguration]*
+|
+
+
+Debugging-related configurations
+
+|`tolerations` +
+[]string
+|
+
+
+Add Tolerations to the operator Pod
+
+|`nodeSelectors` +
+[]string
+|
+
+
+Add a NodeSelectors to the operator Pod
+
+|`resourcesRequirements` +
+[]string
+|
+
+
+Define the resources requests and limits assigned to the operator Pod as <requestType.requestResource=value> (i.e., limits.memory=256Mi)
+
+|`envVars` +
+[]string
+|
+
+
+Add an environment variable to set in the operator Pod(s), as <name=value>
+
+
+|===
+
+[#_camel_apache_org_v1_OperatorDebuggingConfiguration]
+=== OperatorDebuggingConfiguration
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_OperatorConfiguration, OperatorConfiguration>>
+
+
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`enabled` +
+bool
+|
+
+
+To enable or disable the operator debugging
+
+|`port` +
+int32
+|
+
+
+The port of the debugger
+
+|`path` +
+string
+|
+
+
+The path to the kamel executable file
+
+
+|===
+
+[#_camel_apache_org_v1_OperatorHealthConfiguration]
+=== OperatorHealthConfiguration
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_OperatorConfiguration, OperatorConfiguration>>
+
+
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`port` +
+int32
+|
+
+
+The port of the health endpoint
+
+
+|===
+
+[#_camel_apache_org_v1_OperatorMonitoringConfiguration]
+=== OperatorMonitoringConfiguration
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_OperatorConfiguration, OperatorConfiguration>>
+
+
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`enabled` +
+bool
+|
+
+
+To enable or disable the operator monitoring
+
+|`port` +
+int32
+|
+
+
+The port of the metrics endpoint
+
+
+|===
+
+[#_camel_apache_org_v1_OperatorStorageConfiguration]
+=== OperatorStorageConfiguration
+
+OperatorStorageConfiguration represents the configuration required for Camel K operator storage.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`enabled` +
+bool
+|
+
+
+
+
+|`className` +
+string
+|
+
+
+
+
+|`capacity` +
+string
+|
+
+
+
+
+|`accessMode` +
+string
+|
+
+
+
 
 
 |===

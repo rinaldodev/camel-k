@@ -26,12 +26,13 @@ import (
 // IntegrationPlatformSpecApplyConfiguration represents an declarative configuration of the IntegrationPlatformSpec type for use
 // with apply.
 type IntegrationPlatformSpecApplyConfiguration struct {
-	Cluster       *v1.IntegrationPlatformCluster                    `json:"cluster,omitempty"`
-	Profile       *v1.TraitProfile                                  `json:"profile,omitempty"`
-	Build         *IntegrationPlatformBuildSpecApplyConfiguration   `json:"build,omitempty"`
-	Traits        *TraitsApplyConfiguration                         `json:"traits,omitempty"`
-	Configuration []ConfigurationSpecApplyConfiguration             `json:"configuration,omitempty"`
-	Kamelet       *IntegrationPlatformKameletSpecApplyConfiguration `json:"kamelet,omitempty"`
+	Cluster               *v1.IntegrationPlatformCluster                    `json:"cluster,omitempty"`
+	Profile               *v1.TraitProfile                                  `json:"profile,omitempty"`
+	Build                 *IntegrationPlatformBuildSpecApplyConfiguration   `json:"build,omitempty"`
+	Traits                *TraitsApplyConfiguration                         `json:"traits,omitempty"`
+	Configuration         []ConfigurationSpecApplyConfiguration             `json:"configuration,omitempty"`
+	Kamelet               *IntegrationPlatformKameletSpecApplyConfiguration `json:"kamelet,omitempty"`
+	OperatorConfiguration *OperatorConfigurationApplyConfiguration          `json:"operatorConfiguration,omitempty"`
 }
 
 // IntegrationPlatformSpecApplyConfiguration constructs an declarative configuration of the IntegrationPlatformSpec type for use with
@@ -90,5 +91,13 @@ func (b *IntegrationPlatformSpecApplyConfiguration) WithConfiguration(values ...
 // If called multiple times, the Kamelet field is set to the value of the last call.
 func (b *IntegrationPlatformSpecApplyConfiguration) WithKamelet(value *IntegrationPlatformKameletSpecApplyConfiguration) *IntegrationPlatformSpecApplyConfiguration {
 	b.Kamelet = value
+	return b
+}
+
+// WithOperatorConfiguration sets the OperatorConfiguration field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the OperatorConfiguration field is set to the value of the last call.
+func (b *IntegrationPlatformSpecApplyConfiguration) WithOperatorConfiguration(value *OperatorConfigurationApplyConfiguration) *IntegrationPlatformSpecApplyConfiguration {
+	b.OperatorConfiguration = value
 	return b
 }

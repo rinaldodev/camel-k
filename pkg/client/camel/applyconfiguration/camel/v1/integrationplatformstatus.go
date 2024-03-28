@@ -93,6 +93,14 @@ func (b *IntegrationPlatformStatusApplyConfiguration) WithKamelet(value *Integra
 	return b
 }
 
+// WithOperatorConfiguration sets the OperatorConfiguration field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the OperatorConfiguration field is set to the value of the last call.
+func (b *IntegrationPlatformStatusApplyConfiguration) WithOperatorConfiguration(value *OperatorConfigurationApplyConfiguration) *IntegrationPlatformStatusApplyConfiguration {
+	b.OperatorConfiguration = value
+	return b
+}
+
 // WithObservedGeneration sets the ObservedGeneration field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the ObservedGeneration field is set to the value of the last call.

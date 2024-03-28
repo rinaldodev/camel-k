@@ -19,7 +19,7 @@ package integrationplatform
 
 import (
 	"context"
-
+	"fmt"
 	corev1 "k8s.io/api/core/v1"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -72,6 +72,25 @@ func (action *createAction) Handle(ctx context.Context, platform *v1.Integration
 			return nil, err
 		}
 	}
+
+	action.L.Infof("Installing Camel K operator: %s", platform.Name)
+	err = install.InstallOperator(ctx, action.client, platform.Namespace, platform.Spec.OperatorConfiguration)
+	if err != nil {
+		action.L.Errorf(err, "Failed to install Camel K operator: %s", platform.Name)
+		platform.Status.SetCondition(
+			v1.IntegrationPlatformConditionOperatorInstalled,
+			corev1.ConditionFalse,
+			v1.IntegrationPlatformConditionOperatorInstalledReason,
+			fmt.Sprintf("unable to install camel k operator: %s", err.Error()))
+
+		return platform, err
+	}
+
+	platform.Status.SetCondition(
+		v1.IntegrationPlatformConditionOperatorInstalled,
+		corev1.ConditionTrue,
+		v1.IntegrationPlatformConditionOperatorInstalledReason,
+		"camel k operator installed")
 
 	platform.Status.SetCondition(
 		v1.IntegrationPlatformConditionTypeCreated,

@@ -45,6 +45,64 @@ type IntegrationPlatformSpec struct {
 	Configuration []ConfigurationSpec `json:"configuration,omitempty"`
 	// configuration to be executed to all Kamelets controlled by this IntegrationPlatform
 	Kamelet IntegrationPlatformKameletSpec `json:"kamelet,omitempty"`
+	// Operator deployment related configuration
+	OperatorConfiguration OperatorConfiguration `json:"operatorConfiguration,omitempty"`
+}
+
+type OperatorConfiguration struct {
+	// Set the operator Image used for the operator deployment
+	CustomImage string `json:"customImage,omitempty"`
+	// Image Pull Policy that will be used for the custom image
+	CustomImagePullPolicy string `json:"customImagePullPolicy,omitempty"`
+	// Namespace where the operator deployment will be created
+	Namespace string `json:"namespace,omitempty"`
+	// Configure the operator to watch all namespaces
+	Global bool `json:"global,omitempty"`
+	// Set explicitly the cluster type to Kubernetes or OpenShift
+	ClusterType string `json:"clusterType,omitempty"`
+	// Health-related configurations
+	Health OperatorHealthConfiguration `json:"health"`
+	// Monitoring-related configurations
+	Monitoring OperatorMonitoringConfiguration `json:"monitoring"`
+	// Debugging-related configurations
+	Debugging OperatorDebuggingConfiguration `json:"debugging"`
+	// Add Tolerations to the operator Pod
+	Tolerations []string `json:"tolerations,omitempty"`
+	// Add a NodeSelectors to the operator Pod
+	NodeSelectors []string `json:"nodeSelectors,omitempty"`
+	// Define the resources requests and limits assigned to the operator Pod as <requestType.requestResource=value> (i.e., limits.memory=256Mi)
+	ResourcesRequirements []string `json:"resourcesRequirements,omitempty"`
+	// Add an environment variable to set in the operator Pod(s), as <name=value>
+	EnvVars []string `json:"envVars,omitempty"`
+}
+
+type OperatorHealthConfiguration struct {
+	// The port of the health endpoint
+	Port int32 `json:"port,omitempty"`
+}
+
+type OperatorDebuggingConfiguration struct {
+	// To enable or disable the operator debugging
+	Enabled bool `json:"enabled,omitempty"`
+	// The port of the debugger
+	Port int32 `json:"port,omitempty"`
+	// The path to the kamel executable file
+	Path string `json:"path,omitempty"`
+}
+
+type OperatorMonitoringConfiguration struct {
+	// To enable or disable the operator monitoring
+	Enabled bool `json:"enabled,omitempty"`
+	// The port of the metrics endpoint
+	Port int32 `json:"port,omitempty"`
+}
+
+// OperatorStorageConfiguration represents the configuration required for Camel K operator storage.
+type OperatorStorageConfiguration struct {
+	Enabled    bool   `json:"enabled,omitempty"`
+	ClassName  string `json:"className,omitempty"`
+	Capacity   string `json:"capacity,omitempty"`
+	AccessMode string `json:"accessMode,omitempty"`
 }
 
 // IntegrationPlatformStatus defines the observed state of IntegrationPlatform.
@@ -203,12 +261,17 @@ const (
 	// IntegrationPlatformConditionCamelCatalogAvailable is the condition for the availability of a container registry.
 	IntegrationPlatformConditionCamelCatalogAvailable IntegrationPlatformConditionType = "CamelCatalogAvailable"
 
+	// IntegrationPlatformConditionOperatorInstalled is the condition for the availability of the Camel K Operator.
+	IntegrationPlatformConditionOperatorInstalled IntegrationPlatformConditionType = "OperatorInstalled"
+
 	// IntegrationPlatformConditionCreatedReason represents the reason that the IntegrationPlatform is created.
 	IntegrationPlatformConditionCreatedReason = "IntegrationPlatformCreated"
 	// IntegrationPlatformConditionTypeRegistryAvailableReason represents the reason that the IntegrationPlatform Registry is available.
 	IntegrationPlatformConditionTypeRegistryAvailableReason = "IntegrationPlatformRegistryAvailable"
 	// IntegrationPlatformConditionCamelCatalogAvailableReason represents the reason that the IntegrationPlatform is created.
 	IntegrationPlatformConditionCamelCatalogAvailableReason = "IntegrationPlatformCamelCatalogAvailable"
+	// IntegrationPlatformConditionCamelCatalogAvailableReason represents the reason that the IntegrationPlatform is created.
+	IntegrationPlatformConditionOperatorInstalledReason = "IntegrationPlatformOperatorInstalledReason"
 )
 
 // IntegrationPlatformCondition describes the state of a resource at a certain point.
