@@ -325,7 +325,7 @@ func setPlatformDefaults(p *v1.IntegrationPlatform, verbose bool) error {
 	// Build timeout
 	if p.Status.Build.GetTimeout().Duration == 0 {
 		p.Status.Build.Timeout = &metav1.Duration{
-			Duration: 5 * time.Minute,
+			Duration: 10 * time.Minute,
 		}
 	} else {
 		d := p.Status.Build.GetTimeout().Duration.Truncate(time.Second)

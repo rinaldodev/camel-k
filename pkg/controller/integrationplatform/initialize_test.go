@@ -54,7 +54,7 @@ func TestTimeouts_Default(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotNil(t, answer)
 
-	assert.Equal(t, 5*time.Minute, answer.Status.Build.GetTimeout().Duration)
+	assert.Equal(t, 10*time.Minute, answer.Status.Build.GetTimeout().Duration)
 }
 
 func TestTimeouts_MavenComputedFromBuild(t *testing.T) {
