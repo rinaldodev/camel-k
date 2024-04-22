@@ -1925,7 +1925,7 @@ func BuildCondition(t *testing.T, ctx context.Context, ns string, name string, c
 	}
 }
 
-func BuildFailureRecovery(t *testing.T, ctx context.Context, ns, name string) func() int {
+func BuildFailureRecoveryAttempt(t *testing.T, ctx context.Context, ns, name string) func() int {
 	return func() int {
 		build := Build(t, ctx, ns, name)()
 		if build != nil {
