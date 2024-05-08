@@ -110,7 +110,7 @@ func TestAlternativeImageInstallation(t *testing.T) {
 	WithNewTestNamespace(t, func(ctx context.Context, g *WithT, ns string) {
 		operatorID := fmt.Sprintf("camel-k-%s", ns)
 		g.Expect(KamelInstallWithID(t, ctx, operatorID, ns, "--olm=false", "--operator-image", "x/y:latest")).To(Succeed())
-		g.Eventually(OperatorImage(t, ctx, ns)).Should(Equal("x/y:latest"))
+		g.Eventually(PlatformControllerImage(t, ctx, ns)).Should(Equal("x/y:latest"))
 	})
 }
 

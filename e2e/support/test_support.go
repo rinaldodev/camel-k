@@ -1442,6 +1442,18 @@ func OperatorImage(t *testing.T, ctx context.Context, ns string) func() string {
 	}
 }
 
+func PlatformControllerImage(t *testing.T, ctx context.Context, ns string) func() string {
+	return func() string {
+		pod := PlatformControllerPod(t, ctx, ns)()
+		if pod != nil {
+			if len(pod.Spec.Containers) > 0 {
+				return pod.Spec.Containers[0].Image
+			}
+		}
+		return ""
+	}
+}
+
 func OperatorPodSecurityContext(t *testing.T, ctx context.Context, ns string) func() *corev1.SecurityContext {
 	return func() *corev1.SecurityContext {
 		pod := OperatorPod(t, ctx, ns)()
@@ -2391,7 +2403,7 @@ func OperatorPod(t *testing.T, ctx context.Context, ns string) func() *corev1.Po
 	return componentPod(t, ctx, ns, "operator")
 }
 
-func PlatformcontrollerPod(t *testing.T, ctx context.Context, ns string) func() *corev1.Pod {
+func PlatformControllerPod(t *testing.T, ctx context.Context, ns string) func() *corev1.Pod {
 	return componentPod(t, ctx, ns, "platformcontroller")
 }
 

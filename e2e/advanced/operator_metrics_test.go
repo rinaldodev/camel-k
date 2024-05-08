@@ -84,7 +84,7 @@ func TestMetrics(t *testing.T) {
 		g.Expect(err).To(BeNil())
 		g.Expect(logs).NotTo(BeEmpty())
 
-		platformcontrollerPod := PlatformcontrollerPod(t, ctx, ns)()
+		platformcontrollerPod := PlatformControllerPod(t, ctx, ns)()
 		Expect(platformcontrollerPod).NotTo(BeNil())
 
 		operatorLogs, operatorMetrics := getLogsAndMetrics(t, ctx, operatorPod, "camel-k-operator")
